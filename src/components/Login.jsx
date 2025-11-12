@@ -8,13 +8,13 @@ import BASE_URL from "../utils/constants";
 
 function Login() {
    const dispatch = useDispatch();
-     const navigate = useNavigate();
-  
+   const navigate = useNavigate();
+   const [error, setError] = useState("");
    const [email, setEmail] = React.useState("piyaa@gmail.com");
     const [password, setPassword] = React.useState("Tupe@123");
 
     const loginSubmit=async()=>{    
-    const Data=   await axios.post(BASE_URL+"/login",
+    try{const Data=   await axios.post(BASE_URL+"/login",
     {
     email,
     password,
@@ -23,9 +23,12 @@ function Login() {
     )
         dispatch(addUser(Data.data) );
         return navigate("/feed");
-    }
+    }catch(err){
+    setError(err.response?.data?.error || "Login failed!");
+    console.log("Login error:",err);
+  }
 
-
+  }
 //     const loginSubmit = async () => {
 //   const response = await fetch("http://localhost:3000/login", {
 //     method: "POST",
@@ -66,6 +69,7 @@ function Login() {
           value={password}
           onChange={(e)=>setPassword(e.target.value)}
         />
+        <div className="text-red-500">{error}</div>
         <button className="btn bg-black text-white w-full hover:bg-gray-800" onClick={loginSubmit}>
           Login
         </button>
